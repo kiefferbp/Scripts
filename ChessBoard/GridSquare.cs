@@ -2,14 +2,12 @@
 using System.Collections;
 
 public class GridSquare : MonoBehaviour {
-
-    private Player player;
-    private ChessPiece piece;
-    private bool trigger, isActive;
-    private int row, col;
-    private Color c;
-
-    private Renderer rn;
+    private Player player;              // Player that owns square
+    private ChessPiece piece;           // Piece on square
+    private bool trigger, isActive;     // Square state - active, triggered
+    private int row, col;               // Square's location in controller matrix
+    private Color c;                    // Color of each square 
+    private Renderer rn;                // Renderer - handles color changes
 
     void Start()
     {
@@ -22,28 +20,44 @@ public class GridSquare : MonoBehaviour {
         c = rn.material.color;
     }
 
-    public void setActive(bool active)
+    /// <summary>
+    /// A square is considered active only when it's possible for it 
+    /// to be used by the player. For instance, when the player begins 
+    /// its turn, the player should only be allowed to select its own 
+    /// pieces. Once a piece is chosen, then the player can only move
+    /// that piece to its destination.  
+    /// </summary>
+    public void activate()
     {
-        isActive = active;
+        isActive = true;
     }
 
-    public void empty()
+    public void deactivate()
     {
-        player = null;
-        piece = null;
-        trigger = false;
         isActive = false;
+        trigger = false;
     }
 
-    public bool active()
+    /*
+     * Checks if a square is currently in play, or triggerable
+     * */
+    public bool inPlay()
     {
         return isActive;
     }
 
+    /*
+     * Gets mouse click input. Only pieces in play can be triggered.
+     * */
+    void OnMouseDown()
+    {
+        if (inPlay())
+            triggerSquare();
+    }
+
     public void triggerSquare()
     {
-
-        trigger = !trigger;
+        trigger = true; 
     }
 
     public bool isTriggered()
@@ -51,10 +65,17 @@ public class GridSquare : MonoBehaviour {
         return trigger;
     }
 
-
-
-
-
+    /* 
+     * Resets the square once a player has moves its piece
+     * */
+    public void reset()
+    {
+        player = null;
+        piece = null;
+        trigger = false;
+        isActive = false;
+        resetColor();
+    }
 
     /// <summary>
     /// Handles square colors for making moves
@@ -62,7 +83,6 @@ public class GridSquare : MonoBehaviour {
     /// Mark attack moves - squares with enemy pieces
     /// Reset - reset square color after a move is made
     /// </summary>
-    
     public void markOpenPath()
     {
         rn.material.color = Color.green;
@@ -78,12 +98,9 @@ public class GridSquare : MonoBehaviour {
         rn.material.color = c;
     }
 
-    void OnMouseDown()
-    {
-        if (isActive)
-            triggerSquare();
-    }
-
+    /*
+     * Accessor functions
+     * */
     public void setCor(int row, int col)
     {
         this.row = row;
@@ -100,9 +117,14 @@ public class GridSquare : MonoBehaviour {
         return col;
     }
 
-    public Player getPlayer() { return player; }
+    public Player getPlayer()
+    {
+        return player;
+    }
 
-    public ChessPiece getPiece() { return piece; }
+    public ChessPiece getPiece() {
+        return piece;
+    }
 
     public void setPlayer(Player player)
     {
@@ -113,5 +135,4 @@ public class GridSquare : MonoBehaviour {
     {
         this.piece = piece;
     }
-
 }
