@@ -3,9 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
-    public GameController controller;
-    public bool whitePlayer;
+    public GameController controller;           // Game controller
+    public bool whitePlayer;                    // White player or black (not white)
 
+    /*
+     * At the player's turn, there are two different
+     * states - choosing a piece to move and making a move. 
+     * When the player is choosing a piece, the list of pieces
+     * needs to be checked for a triggered piece, indicating a 
+     * selection. When the player is making a move, the list of
+     * possible moves needs to be checked for a triggered square, 
+     * indicating a movement.
+     * */
     private bool makingMove, newTurn;
     private List<GridSquare> pieces, moves;
 
@@ -15,55 +24,60 @@ public class Player : MonoBehaviour {
         newTurn = true;
         pieces = null;
         moves = null;
-        gameObject.SetActive(false);
+        gameObject.SetActive(false);        // Waits for controller to activate it 
     }
 
     void Update()
     {
         if(myTurn())
         {
-            GridSquare from = null;
+            GridSquare from = null;     // Piece to be moved
             if (!makingMove)
             {
-                if(newTurn)
+                if(newTurn) // Start of the new turn 
                 {
-                    pieces = controller.getPieces(this);
-                    newTurn = false;
-                } // optimization
+                    pieces = controller.getPieces(this);    // Get players pieces
+                    controller.squaresInPlay(pieces);       // Pieces are in play
+                    newTurn = false;                        
+                } 
 
-                
+                /*
+                 * Check for a piece to be selected by the player
+                 * */
                 foreach (GridSquare g in pieces)
-                {
-
-                    if (g.isTriggered())
+                { 
+                    if (g.isTriggered())    // Piece has been selected
                     {
-                        from = g;
-                        moves = controller.getMoves(g);
-                        makingMove = true;
-                        foreach (GridSquare k in pieces)
-                        {
-                            k.setActive(false);
-                        }
+                        from = g;                               // Piece to be moved 
+                        moves = controller.getMoves(g);         // Find where the piece can move
+                        makingMove = true;                      // Switch to move state
+                        controller.squaresOutOfPlay(pieces);    // Pieces no longer in play
+                        controller.squaresInPlay(moves);        // Move places in play
                         break;
                     }
-
                 }
             }
-            else
+            else    //  Move state
             {
+                /*
+                 * Check where to selected piece can move
+                 * */
                 foreach (GridSquare g in moves)
                 {
-                    if (g.isTriggered())
+                    if (g.isTriggered())    // Move has been chosen
                     {
-                        controller.makeMove(from, g);
+                        controller.makeMove(from, g);       // Make move
+                        // Set values for next turn;
+                        controller.squaresOutOfPlay(moves);
+                        makingMove = false;
+                        newTurn = true;
+                        controller.endTurn(isWhitePlayer());    // End turn  
+                        gameObject.SetActive(false);            // Player sleeps until next turn
                     }
-                }
-                makingMove = true;
-                newTurn = true;
-                gameObject.SetActive(false);
-            }
-        }
-    }
+                } // end foreach
+            } // end if(!makingMove)
+        } // end if(myTurn())
+    } // end Update()
 
     public bool isWhitePlayer()
     {

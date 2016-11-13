@@ -35,11 +35,10 @@ public class GameController : MonoBehaviour {
 
             grid[6, i].setPlayer(whitePlayer);
             grid[7, i].setPlayer(whitePlayer);
-            grid[6, i].setActive(true);
-            grid[7, i].setActive(true);
             whitePieces.Add(grid[6, i]);
             whitePieces.Add(grid[7, i]);
         }
+        squaresInPlay(whitePieces);
         wPlayer.SetActive(true);
     }
 
@@ -153,5 +152,22 @@ public class GameController : MonoBehaviour {
         grid[0, 4].setPiece(new ChessPiece("king"));
         grid[7, 3].setPiece(new ChessPiece("queen"));
         grid[7, 4].setPiece(new ChessPiece("king"));
+    }
+
+
+    public void squaresInPlay(List<GridSquare> squares)
+    {
+        foreach(GridSquare g in squares)
+        {
+            g.activate();
+        }
+    }
+
+    public void squaresOutOfPlay(List<GridSquare> squares)
+    {
+        foreach (GridSquare g in squares)
+        {
+            g.deactivate();
+        }
     }
 }
