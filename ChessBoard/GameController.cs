@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour {
 
         yield return new WaitForSeconds(0.01f);
 
-        initializePieces();
+        //initializePieces();
         for (int i = 0; i < 8; i++)
         {
             grid[0, i].setPlayer(blackPlayer);
@@ -61,6 +61,9 @@ public class GameController : MonoBehaviour {
         int col = g.getCol();
         int[] moveDescriptions = piece.moveDescription();
 
+
+        GridSquare candidate; 
+
         if (piece is Pawn) {
             if(whitePlayer) {
                 
@@ -75,7 +78,7 @@ public class GameController : MonoBehaviour {
 
     public void makeMove(GridSquare from, GridSquare to)
     {
-        bool whitePlayer = from.getPlayer().isWhitePlayer();
+        /*bool whitePlayer = from.getPlayer().isWhitePlayer();
         if(to.getPlayer() != null) //attack
         {
             if (whitePlayer)
@@ -97,25 +100,61 @@ public class GameController : MonoBehaviour {
             blackPieces.Add(to);
             whiteTurn = true;
             wPlayer.SetActive(true);
-        }
+        }*/
     }
 
-    public List<GridSquare> getPieces(Player p)
+    public bool boundaryCheck(int row, int col) {
+        return row >= 0 && row <= 8 && col >= 0 && col <= 8;
+    }
+
+    public List<GridSquare> getPieces()
     {
-        if (p.isWhitePlayer())
+        if (whiteTurn)
             return whitePieces;
         return blackPieces;
     }
 
+    /*
+     * Tells if it's white player's turn
+     * */
     public bool isWhiteTurn()
     {
         return whiteTurn;
     }
 
-    public void initializePieces()
+    /*
+     * Sets squares in or out of play - determines if they can be 
+     * triggered or ignored. 
+     * */
+    public void squaresInPlay(List<GridSquare> squares)
     {
-        for (int i = 0; i < 8; i++)
+        foreach(GridSquare g in squares)
         {
+            g.activate();
+        }
+    }
+
+    public void squaresOutOfPlay(List<GridSquare> squares)
+    {
+        foreach (GridSquare g in squares)
+        {
+            g.deactivate();
+        }
+    }
+
+    /*
+     * Player ends turn 
+     * */
+    public void endTurn()
+    {
+        whiteTurn = !whiteTurn;
+    }
+
+
+
+
+    public void initializePieces() {
+        for (int i = 0; i < 8; i++) {
             grid[1, i].setPiece(new Pawn());
             grid[6, i].setPiece(new Pawn());
         }
@@ -144,30 +183,5 @@ public class GameController : MonoBehaviour {
         grid[0, 4].setPiece(new ChessPiece("king"));
         grid[7, 3].setPiece(new ChessPiece("queen"));
         grid[7, 4].setPiece(new ChessPiece("king"));*/
-    }
-
-
-    public void squaresInPlay(List<GridSquare> squares)
-    {
-        foreach(GridSquare g in squares)
-        {
-            g.activate();
-        }
-    }
-
-    public void squaresOutOfPlay(List<GridSquare> squares)
-    {
-        foreach (GridSquare g in squares)
-        {
-            g.deactivate();
-        }
-    }
-
-    public void endTurn(bool isWhitePlayer)
-    {
-        if(isWhitePlayer)
-        {
-            whiteTurn = false;
-        }
     }
 }

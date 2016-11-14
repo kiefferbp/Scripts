@@ -31,13 +31,13 @@ public class Player : MonoBehaviour {
     {
         if(myTurn())
         {
-            GridSquare from = null;     // Piece to be moved
+            GridSquare selectedPiece = null;     // Piece to be moved
             if (!makingMove)
             {
                 if(newTurn) // Start of the new turn 
                 {
-                    pieces = controller.getPieces(this);    // Get players pieces
-                    controller.squaresInPlay(pieces);       // Pieces are in play
+                    pieces = controller.getPieces();    // Get players pieces
+                    controller.squaresInPlay(pieces);   // Pieces are in play
                     newTurn = false;                        
                 }
 
@@ -48,8 +48,7 @@ public class Player : MonoBehaviour {
                 { 
                     if (g.isTriggered())    // Piece has been selected
                     {
-                        Debug.Log("hi");
-                        from = g;                               // Piece to be moved 
+                        selectedPiece = g;                               // Piece to be moved 
                         moves = controller.getMoves(g, whitePlayer);         // Find where the piece can move
                         makingMove = true;                      // Switch to move state
                         controller.squaresOutOfPlay(pieces);    // Pieces no longer in play
@@ -67,13 +66,13 @@ public class Player : MonoBehaviour {
                 {
                     if (g.isTriggered())    // Move has been chosen
                     {
-                        controller.makeMove(from, g);       // Make move
+                        controller.makeMove(selectedPiece, g);       // Make move
                         // Set values for next turn;
                         controller.squaresOutOfPlay(moves);
                         makingMove = false;
                         newTurn = true;
-                        controller.endTurn(isWhitePlayer());    // End turn  
-                        gameObject.SetActive(false);            // Player sleeps until next turn
+                        controller.endTurn();           // End turn  
+                        gameObject.SetActive(false);    // Player sleeps until next turn
                     }
                 } // end foreach
             } // end if(!makingMove)
