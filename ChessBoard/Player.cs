@@ -39,7 +39,7 @@ public class Player : MonoBehaviour {
                     pieces = controller.getPieces(this);    // Get players pieces
                     controller.squaresInPlay(pieces);       // Pieces are in play
                     newTurn = false;                        
-                } 
+                }
 
                 /*
                  * Check for a piece to be selected by the player
@@ -48,8 +48,9 @@ public class Player : MonoBehaviour {
                 { 
                     if (g.isTriggered())    // Piece has been selected
                     {
+                        Debug.Log("hi");
                         from = g;                               // Piece to be moved 
-                        moves = controller.getMoves(g);         // Find where the piece can move
+                        moves = controller.getMoves(g, whitePlayer);         // Find where the piece can move
                         makingMove = true;                      // Switch to move state
                         controller.squaresOutOfPlay(pieces);    // Pieces no longer in play
                         controller.squaresInPlay(moves);        // Move places in play

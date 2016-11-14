@@ -52,31 +52,23 @@ public class GameController : MonoBehaviour {
 
     
 
-    public List<GridSquare> getMoves(GridSquare g)
+    public List<GridSquare> getMoves(GridSquare g, bool whitePlayer)
     {
+        ChessPiece piece = g.getPiece();
         List<GridSquare> possibleMoves = new List<GridSquare>();
-        bool whitePlayer = g.getPlayer().isWhitePlayer();
+
         int row = g.getRow();
         int col = g.getCol();
-        GridSquare check;
+        int[] moveDescriptions = piece.moveDescription();
 
-        if (whitePlayer)
-            check = grid[row - 1, col];
+        if (piece is Pawn) {
+            if(whitePlayer) {
+                
+            }
 
-        else
-            check = grid[row + 1, col];
-
-        if (check.getPlayer() == null)
-        {
-            possibleMoves.Add(check);
-            check.markOpenPath();
         }
-        else if (check.getPlayer() != g.getPlayer())
-        {
-            possibleMoves.Add(check);
-            check.markEnemy();
-        }
-        else { }
+
+        
 
         return possibleMoves;
     }
@@ -93,7 +85,7 @@ public class GameController : MonoBehaviour {
         }
         to.setPlayer(from.getPlayer());
         to.setPiece(from.getPiece());
-        from.empty();
+        //from.empty();
         if (whitePlayer)
         {
             whitePieces.Add(to);
@@ -124,11 +116,11 @@ public class GameController : MonoBehaviour {
     {
         for (int i = 0; i < 8; i++)
         {
-            grid[1, i].setPiece(new ChessPiece("pawn"));
-            grid[6, i].setPiece(new ChessPiece("pawn"));
+            grid[1, i].setPiece(new Pawn());
+            grid[6, i].setPiece(new Pawn());
         }
 
-        grid[0, 0].setPiece(new ChessPiece("rook"));
+        /*grid[0, 0].setPiece(new ChessPiece("rook"));
         grid[0, 7].setPiece(new ChessPiece("rook"));
         grid[7, 0].setPiece(new ChessPiece("rook"));
         grid[7, 7].setPiece(new ChessPiece("rook"));
@@ -151,7 +143,7 @@ public class GameController : MonoBehaviour {
         grid[0, 3].setPiece(new ChessPiece("queen"));
         grid[0, 4].setPiece(new ChessPiece("king"));
         grid[7, 3].setPiece(new ChessPiece("queen"));
-        grid[7, 4].setPiece(new ChessPiece("king"));
+        grid[7, 4].setPiece(new ChessPiece("king"));*/
     }
 
 
@@ -168,6 +160,14 @@ public class GameController : MonoBehaviour {
         foreach (GridSquare g in squares)
         {
             g.deactivate();
+        }
+    }
+
+    public void endTurn(bool isWhitePlayer)
+    {
+        if(isWhitePlayer)
+        {
+            whiteTurn = false;
         }
     }
 }

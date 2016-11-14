@@ -18,16 +18,13 @@ public class BoardConfig : MonoBehaviour {
         float x = STARTING_X;
         float y = STARTING_Y;
         GameObject square;
-        for (int col = 0; col < 8; col++)
-        {
-
+        for (int col = 0; col < 8; col++) {
             if (col % 2 == 0)               // even numbered columns 
                 square = whiteSquare;       // first square is white
             else                            // odd numbered columns 
                 square = blackSquare;       // first square is black
 
-            for (int row = 0; row < 8; row++)
-            {
+            for (int row = 0; row < 8; row++) {
                 GameObject temp = Instantiate(square, transform) as GameObject;             // Create each square
                 temp.transform.localRotation = Quaternion.identity;                         // Set rotation
                 temp.transform.localPosition = new Vector3(x, y, 0.0f);                     // Set position
@@ -48,10 +45,8 @@ public class BoardConfig : MonoBehaviour {
         // Allow enough time for each square to finish Start() routine
         yield return new WaitForSeconds(0.01f);
         // Assign each square its row and column value
-        for (int col = 0; col < 8; col++)
-        {
-            for (int row = 0; row < 8; row++)
-            {
+        for (int col = 0; col < 8; col++) {
+            for (int row = 0; row < 8; row++) {
                 GameController.grid[row, col].setCor(row, col);
             }
         }
