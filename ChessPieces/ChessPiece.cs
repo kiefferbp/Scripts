@@ -2,18 +2,7 @@
 using System.Collections;
 
 abstract public class ChessPiece : MonoBehaviour {
-
-    //private string type;
-    //private bool hasMoved;
-    /*public ChessPiece(string name)
-    {
-        type = name.ToLower();
-        hasMoved = false;
-    }*/
-	
-    
+    private int[] moves;    // Each piece needs a move description
 
     abstract public int[] moveDescription();
-
- 
 }

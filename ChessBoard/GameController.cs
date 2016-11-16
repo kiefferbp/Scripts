@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 /*
  * Container class for the chess piece prefabs
+ * Made to declutter inspector view 
  * */
 [System.Serializable]
 public class PiecePrefabs {
@@ -12,6 +13,12 @@ public class PiecePrefabs {
 }
 
 public class GameController : MonoBehaviour {
+    private const float VEC_ZERO = 0.0f;
+    // Chess piece scaling 
+    private const float SCALE_X = 0.7f;     
+    private const float SCALE_Y = 0.3f;
+    private const float SCALE_Z = 0.7f;
+
     public static GridSquare[,] grid = new GridSquare[8,8];
     public GameObject wPlayer, bPlayer;                         // Player Gameobjects
     public GameObject chessBoard;                               // Chess board Gameobjects
@@ -164,10 +171,10 @@ public class GameController : MonoBehaviour {
         for (int i = 0; i < 8; i++) {
             wSquare = grid[6, i];
             bSquare = grid[1, i];
-            wPiece = (Instantiate(piecePrefabs.wPawn, wSquare.transform) as GameObject).GetComponent<ChessPiece>();
-            bPiece = (Instantiate(piecePrefabs.bPawn, bSquare.transform) as GameObject).GetComponent<ChessPiece>();
-            wSquare.setPiece(wPiece);
-            bSquare.setPiece(bPiece);
+            wSquare.setPiece((Instantiate(piecePrefabs.wPawn, wSquare.transform) 
+                as GameObject).GetComponent<ChessPiece>());     // Instantiate white pawn and set
+            bSquare.setPiece((Instantiate(piecePrefabs.bPawn, bSquare.transform) 
+                as GameObject).GetComponent<ChessPiece>());     // Instantiate black pawn and set
         }
 
         /*grid[0, 0].setPiece(new ChessPiece("rook"));
@@ -195,6 +202,10 @@ public class GameController : MonoBehaviour {
         grid[7, 3].setPiece(new ChessPiece("queen"));
         grid[7, 4].setPiece(new ChessPiece("king"));*/
 
+
+        /*
+         * Assign players and add pieces to lists
+         * */
         for (int i = 0; i < 8; i++) {
             // Assign Players to squares
             //grid[0, i].setPlayer(blackPlayer); // not done
@@ -208,17 +219,20 @@ public class GameController : MonoBehaviour {
            // whitePieces.Add(grid[7, i]);
         }
 
-        foreach (GridSquare g in whitePieces) {
-            configureTransform(g.getPiece().gameObject.transform);
-        }
-
-        foreach (GridSquare g in blackPieces) {
-            configureTransform(g.getPiece().gameObject.transform);
-        }
+        /*
+         * Reset positions and re-scale
+         * */
+        for(int i = 0; i < whitePieces.Count; i++) {
+            configureTransform(whitePieces[i].getPiece().gameObject.transform);
+            configureTransform(blackPieces[i].getPiece().gameObject.transform);
+        } 
     }
 
+    /*
+     * Zero's out the position and re-scales 
+     * */
     public void configureTransform(Transform t) {
-        t.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-        t.localScale = new Vector3(0.7f, 0.3f, 0.7f);
+        t.localPosition = new Vector3(VEC_ZERO, VEC_ZERO, VEC_ZERO);
+        t.localScale = new Vector3(SCALE_X, SCALE_Y, SCALE_Z);
     }
 }
