@@ -2,42 +2,44 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+ * Container class for the chess piece prefabs
+ * */
+[System.Serializable]
+public class PiecePrefabs {
+    public GameObject wBishop, wKing, wKnight, wPawn, wQueen, wRook,
+        bBishop, bKing, bKnight, bPawn, bQueen, bRook;
+}
+
 public class GameController : MonoBehaviour {
-
     public static GridSquare[,] grid = new GridSquare[8,8];
+    public GameObject wPlayer, bPlayer;                         // Player Gameobjects
+    public GameObject chessBoard;                               // Chess board Gameobjects
+    public PiecePrefabs piecePrefabs;                          // Chess piece prefabs
 
-    public GameObject wPlayer, bPlayer;
-
-    private Player whitePlayer, blackPlayer;
-    private List<GridSquare> whitePieces, blackPieces;
+    private Player whitePlayer, blackPlayer;                    // Player scripts 
+    private List<GridSquare> whitePieces, blackPieces;          // Player pieces 
     private bool whiteTurn, moveMade;
+
+    enum Column { A, B, C, D, E, F, G, H };                     // Enumerated Columns
+
 
     IEnumerator Start()
     {
+        // Gets player script components 
         whitePlayer = wPlayer.GetComponent<Player>();
         blackPlayer = bPlayer.GetComponent<Player>();
-
+        // Initialize lists 
         whitePieces = new List<GridSquare>();
         blackPieces = new List<GridSquare>();
 
-        whiteTurn = true;
+        whiteTurn = true;   // White player always starts 
         moveMade = false;
-
+  
         yield return new WaitForSeconds(0.01f);
-
-        //initializePieces();
-        for (int i = 0; i < 8; i++)
-        {
-            grid[0, i].setPlayer(blackPlayer);
-            grid[1, i].setPlayer(blackPlayer);
-            blackPieces.Add(grid[0, i]);
-            blackPieces.Add(grid[0, i]);
-
-            grid[6, i].setPlayer(whitePlayer);
-            grid[7, i].setPlayer(whitePlayer);
-            whitePieces.Add(grid[6, i]);
-            whitePieces.Add(grid[7, i]);
-        }
+        // Initialize pieces
+        initializePieces();
+        // Set white in play
         squaresInPlay(whitePieces);
         wPlayer.SetActive(true);
     }
@@ -52,7 +54,7 @@ public class GameController : MonoBehaviour {
 
     
 
-    public List<GridSquare> getMoves(GridSquare g, bool whitePlayer)
+    public List<GridSquare> getMoves(GridSquare g)
     {
         ChessPiece piece = g.getPiece();
         List<GridSquare> possibleMoves = new List<GridSquare>();
@@ -78,6 +80,7 @@ public class GameController : MonoBehaviour {
 
     public void makeMove(GridSquare from, GridSquare to)
     {
+
         /*bool whitePlayer = from.getPlayer().isWhitePlayer();
         if(to.getPlayer() != null) //attack
         {
@@ -154,9 +157,17 @@ public class GameController : MonoBehaviour {
 
 
     public void initializePieces() {
+        GridSquare wSquare, bSquare;
+        ChessPiece wPiece, bPiece;
+
+        // Create pawns
         for (int i = 0; i < 8; i++) {
-            grid[1, i].setPiece(new Pawn());
-            grid[6, i].setPiece(new Pawn());
+            wSquare = grid[6, i];
+            bSquare = grid[1, i];
+            wPiece = (Instantiate(piecePrefabs.wPawn, wSquare.transform) as GameObject).GetComponent<ChessPiece>();
+            bPiece = (Instantiate(piecePrefabs.bPawn, bSquare.transform) as GameObject).GetComponent<ChessPiece>();
+            wSquare.setPiece(wPiece);
+            bSquare.setPiece(bPiece);
         }
 
         /*grid[0, 0].setPiece(new ChessPiece("rook"));
@@ -183,5 +194,31 @@ public class GameController : MonoBehaviour {
         grid[0, 4].setPiece(new ChessPiece("king"));
         grid[7, 3].setPiece(new ChessPiece("queen"));
         grid[7, 4].setPiece(new ChessPiece("king"));*/
+
+        for (int i = 0; i < 8; i++) {
+            // Assign Players to squares
+            //grid[0, i].setPlayer(blackPlayer); // not done
+            grid[1, i].setPlayer(blackPlayer); // Pawns
+            grid[6, i].setPlayer(whitePlayer); // Pawns
+            //grid[7, i].setPlayer(whitePlayer); // not done
+            // Add pieces to player lists
+           // blackPieces.Add(grid[0, i]);
+            blackPieces.Add(grid[1, i]);
+            whitePieces.Add(grid[6, i]);
+           // whitePieces.Add(grid[7, i]);
+        }
+
+        foreach (GridSquare g in whitePieces) {
+            configureTransform(g.getPiece().gameObject.transform);
+        }
+
+        foreach (GridSquare g in blackPieces) {
+            configureTransform(g.getPiece().gameObject.transform);
+        }
+    }
+
+    public void configureTransform(Transform t) {
+        t.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        t.localScale = new Vector3(0.7f, 0.3f, 0.7f);
     }
 }

@@ -48,8 +48,8 @@ public class Player : MonoBehaviour {
                 { 
                     if (g.isTriggered())    // Piece has been selected
                     {
-                        selectedPiece = g;                               // Piece to be moved 
-                        moves = controller.getMoves(g, whitePlayer);         // Find where the piece can move
+                        selectedPiece = g;                      // Piece to be moved 
+                        moves = controller.getMoves(g);         // Find where the piece can move
                         makingMove = true;                      // Switch to move state
                         controller.squaresOutOfPlay(pieces);    // Pieces no longer in play
                         controller.squaresInPlay(moves);        // Move places in play
