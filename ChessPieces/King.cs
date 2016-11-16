@@ -2,15 +2,19 @@
 using System.Collections;
 
 public class King : ChessPiece {
-    private int[] moves;    // Move description after opening move
+    private int[] moves;    // Move description
 
     void Start() {
         /*
-         * 
+         * Bishops only move diagonlly from their current positions.
+         * {8, 8} indicates that a rook can move between 1 and 8 spaces
+         * along its current row and between 1 and 8 spaces along its 
+         * current column in the same move. 
          * */
-        //Row Col
-        moves = new int[4] { 2,  1,
-                             1,  2};
+                          //Row Col
+        moves = new int[6] { 0,  1,
+                             1,  0,
+                             1,  1 };
     }
 
     override public int[] moveDescription() {
