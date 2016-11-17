@@ -6,15 +6,13 @@ public class King : ChessPiece {
 
     void Start() {
         /*
-         * Bishops only move diagonlly from their current positions.
-         * {8, 8} indicates that a rook can move between 1 and 8 spaces
-         * along its current row and between 1 and 8 spaces along its 
-         * current column in the same move. 
+         * The King can only move 1 square in any direction 
+         * from its current position. 
          * */
                           //Row Col
-        moves = new int[6] { 0,  1,
-                             1,  0,
-                             1,  1 };
+        moves = new int[6] { 0,  1,     // Column only
+                             1,  0,     // Row only
+                             1,  1 };   // Diagonal
     }
 
     override public int[] moveDescription() {

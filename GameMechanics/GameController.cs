@@ -13,23 +13,28 @@ public class PiecePrefabs {
 }
 
 public class GameController : MonoBehaviour {
+    /*
+     * Constants
+     * */
     private const float VEC_ZERO = 0.0f;
-    // Chess piece scaling 
     private const float SCALE_X = 0.7f;     
     private const float SCALE_Y = 0.3f;
     private const float SCALE_Z = 0.7f;
-
+    /*
+     * Public variables
+     * */
     public static GridSquare[,] grid = new GridSquare[8,8];
     public GameObject wPlayer, bPlayer;                         // Player Gameobjects
     public GameObject chessBoard;                               // Chess board Gameobjects
     public PiecePrefabs piecePrefabs;                          // Chess piece prefabs
-
+    /*
+     * Private variables
+     * */
     private Player whitePlayer, blackPlayer;                    // Player scripts 
     private List<GridSquare> whitePieces, blackPieces;          // Player pieces 
     private bool whiteTurn, moveMade;
 
     enum Column { A, B, C, D, E, F, G, H };                     // Enumerated Columns
-
 
     IEnumerator Start()
     {
@@ -48,7 +53,6 @@ public class GameController : MonoBehaviour {
         initializePieces();
         // Set white in play
         squaresInPlay(whitePieces);
-        wPlayer.SetActive(true);
     }
 
     void Update()
@@ -65,17 +69,15 @@ public class GameController : MonoBehaviour {
     {
         ChessPiece piece = g.getPiece();
         List<GridSquare> possibleMoves = new List<GridSquare>();
-
         int row = g.getRow();
         int col = g.getCol();
         int[] moveDescriptions = piece.moveDescription();
 
-
-        GridSquare candidate; 
+        //GridSquare candidate; 
 
         if (piece is Pawn) {
-            if(whitePlayer) {
-                
+            if (whitePlayer) {
+                Debug.Log("Selected a pawn");
             }
 
         }
@@ -160,65 +162,68 @@ public class GameController : MonoBehaviour {
         whiteTurn = !whiteTurn;
     }
 
-
-
-
+    /*
+     * Instantiates all chess pieces and sets to proper players.
+     * */
     public void initializePieces() {
-        GridSquare wSquare, bSquare;
-        ChessPiece wPiece, bPiece;
-
         // Create pawns
         for (int i = 0; i < 8; i++) {
-            wSquare = grid[6, i];
-            bSquare = grid[1, i];
-            wSquare.setPiece((Instantiate(piecePrefabs.wPawn, wSquare.transform) 
+            grid[1, i].setPiece((Instantiate(piecePrefabs.wPawn, grid[1, i].transform) 
                 as GameObject).GetComponent<ChessPiece>());     // Instantiate white pawn and set
-            bSquare.setPiece((Instantiate(piecePrefabs.bPawn, bSquare.transform) 
+            grid[6, i].setPiece((Instantiate(piecePrefabs.bPawn, grid[6, i].transform) 
                 as GameObject).GetComponent<ChessPiece>());     // Instantiate black pawn and set
         }
-
-        /*grid[0, 0].setPiece(new ChessPiece("rook"));
-        grid[0, 7].setPiece(new ChessPiece("rook"));
-        grid[7, 0].setPiece(new ChessPiece("rook"));
-        grid[7, 7].setPiece(new ChessPiece("rook"));
-
-        grid[0, 1].setPiece(new ChessPiece("knight"));
-        grid[0, 6].setPiece(new ChessPiece("knight"));
-        grid[7, 1].setPiece(new ChessPiece("knight"));
-        grid[7, 6].setPiece(new ChessPiece("knight"));
-
-        grid[0, 1].setPiece(new ChessPiece("knight"));
-        grid[0, 6].setPiece(new ChessPiece("knight"));
-        grid[7, 1].setPiece(new ChessPiece("knight"));
-        grid[7, 6].setPiece(new ChessPiece("knight"));
-
-        grid[0, 2].setPiece(new ChessPiece("bishop"));
-        grid[0, 5].setPiece(new ChessPiece("bishop"));
-        grid[7, 2].setPiece(new ChessPiece("bishop"));
-        grid[7, 5].setPiece(new ChessPiece("bishop"));
-
-        grid[0, 3].setPiece(new ChessPiece("queen"));
-        grid[0, 4].setPiece(new ChessPiece("king"));
-        grid[7, 3].setPiece(new ChessPiece("queen"));
-        grid[7, 4].setPiece(new ChessPiece("king"));*/
-
-
+        // Create rooks
+        grid[0, 0].setPiece((Instantiate(piecePrefabs.wRook, grid[0, 0].transform)
+                as GameObject).GetComponent<ChessPiece>());     // White rook 1
+        grid[0, 7].setPiece((Instantiate(piecePrefabs.wRook, grid[0, 7].transform)
+            as GameObject).GetComponent<ChessPiece>());         // White rook 2
+        grid[7, 0].setPiece((Instantiate(piecePrefabs.bRook, grid[7, 0].transform)
+                as GameObject).GetComponent<ChessPiece>());     // Black rook 1
+        grid[7, 7].setPiece((Instantiate(piecePrefabs.bRook, grid[7, 7].transform)
+            as GameObject).GetComponent<ChessPiece>());         // Black rook 2
+        // Create knights 
+        grid[0, 1].setPiece((Instantiate(piecePrefabs.wKnight, grid[0, 1].transform)
+                as GameObject).GetComponent<ChessPiece>());     // White knight 1
+        grid[0, 6].setPiece((Instantiate(piecePrefabs.wKnight, grid[0, 6].transform)
+            as GameObject).GetComponent<ChessPiece>());         // White knight 2
+        grid[7, 1].setPiece((Instantiate(piecePrefabs.bKnight, grid[7, 1].transform)
+                as GameObject).GetComponent<ChessPiece>());     // Black knight 1
+        grid[7, 6].setPiece((Instantiate(piecePrefabs.bKnight, grid[7, 6].transform)
+            as GameObject).GetComponent<ChessPiece>());         // Black knight 2
+        // Create bishops
+        grid[0, 2].setPiece((Instantiate(piecePrefabs.wBishop, grid[0, 2].transform)
+                as GameObject).GetComponent<ChessPiece>());     // White bishop 1
+        grid[0, 5].setPiece((Instantiate(piecePrefabs.wBishop, grid[0, 5].transform)
+            as GameObject).GetComponent<ChessPiece>());         // White bishop 2
+        grid[7, 2].setPiece((Instantiate(piecePrefabs.bBishop, grid[7, 2].transform)
+                as GameObject).GetComponent<ChessPiece>());     // Black bishop 1
+        grid[7, 5].setPiece((Instantiate(piecePrefabs.bBishop, grid[7, 5].transform)
+            as GameObject).GetComponent<ChessPiece>());         // Black bishop 2
+        // Create King and Queen
+        grid[0, 3].setPiece((Instantiate(piecePrefabs.wQueen, grid[0, 3].transform)
+                as GameObject).GetComponent<ChessPiece>());     // White Queen
+        grid[0, 4].setPiece((Instantiate(piecePrefabs.wKing, grid[0, 4].transform)
+            as GameObject).GetComponent<ChessPiece>());         // White King
+        grid[7, 3].setPiece((Instantiate(piecePrefabs.bQueen, grid[7, 3].transform)
+                as GameObject).GetComponent<ChessPiece>());     // Black Queen
+        grid[7, 4].setPiece((Instantiate(piecePrefabs.bKing, grid[7, 4].transform)
+            as GameObject).GetComponent<ChessPiece>());         // Black King
         /*
          * Assign players and add pieces to lists
          * */
         for (int i = 0; i < 8; i++) {
             // Assign Players to squares
-            //grid[0, i].setPlayer(blackPlayer); // not done
-            grid[1, i].setPlayer(blackPlayer); // Pawns
-            grid[6, i].setPlayer(whitePlayer); // Pawns
-            //grid[7, i].setPlayer(whitePlayer); // not done
+            grid[0, i].setPlayer(whitePlayer); 
+            grid[1, i].setPlayer(whitePlayer); 
+            grid[6, i].setPlayer(blackPlayer);
+            grid[7, i].setPlayer(blackPlayer);
             // Add pieces to player lists
-           // blackPieces.Add(grid[0, i]);
-            blackPieces.Add(grid[1, i]);
-            whitePieces.Add(grid[6, i]);
-           // whitePieces.Add(grid[7, i]);
+            whitePieces.Add(grid[0, i]);
+            whitePieces.Add(grid[1, i]);
+            blackPieces.Add(grid[6, i]);
+            blackPieces.Add(grid[7, i]);
         }
-
         /*
          * Reset positions and re-scale
          * */
@@ -229,10 +234,12 @@ public class GameController : MonoBehaviour {
     }
 
     /*
-     * Zero's out the position and re-scales 
+     * Zero's out the position and re-scales.
      * */
     public void configureTransform(Transform t) {
         t.localPosition = new Vector3(VEC_ZERO, VEC_ZERO, VEC_ZERO);
         t.localScale = new Vector3(SCALE_X, SCALE_Y, SCALE_Z);
+        t.localRotation = Quaternion.identity;                  // I dont like this
+        t.Rotate(new Vector3(-90.0f, VEC_ZERO, VEC_ZERO));      // I dont like this
     }
 }

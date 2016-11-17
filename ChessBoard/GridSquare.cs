@@ -29,11 +29,13 @@ public class GridSquare : MonoBehaviour {
     /// </summary>
     public void activate()
     {
+        markOpenPath();
         isActive = true;
     }
 
     public void deactivate()
     {
+        resetColor();
         isActive = false;
         trigger = false;
     }
@@ -77,12 +79,12 @@ public class GridSquare : MonoBehaviour {
         resetColor();
     }
 
-    /// <summary>
-    /// Handles square colors for making moves
-    /// Mark open moves - squares without enemy pieces
-    /// Mark attack moves - squares with enemy pieces
-    /// Reset - reset square color after a move is made
-    /// </summary>
+    /*
+     * Handles square colors for making moves: 
+     * Mark open path   - squares without enemy pieces
+     * Mark enemy       - squares with enemy pieces
+     * Reset color      - reset square color 
+     * */
     public void markOpenPath()
     {
         rn.material.color = Color.green;
@@ -107,6 +109,14 @@ public class GridSquare : MonoBehaviour {
         this.col = col;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setPiece(ChessPiece piece) {
+        this.piece = piece;
+    }
+
     public int getRow()
     {
         return row;
@@ -124,15 +134,5 @@ public class GridSquare : MonoBehaviour {
 
     public ChessPiece getPiece() {
         return piece;
-    }
-
-    public void setPlayer(Player player)
-    {
-        this.player = player;
-    }
-
-    public void setPiece(ChessPiece piece)
-    {
-        this.piece = piece;
     }
 }

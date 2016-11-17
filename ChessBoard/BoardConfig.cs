@@ -27,6 +27,7 @@ public class BoardConfig : MonoBehaviour {
             for (int row = 0; row < 8; row++) {
                 GameObject temp = Instantiate(square, transform) as GameObject;             // Create each square
                 temp.transform.localRotation = Quaternion.identity;                         // Set rotation
+                temp.transform.Rotate(new Vector3(0.0f, 0.0f, 180.0f));                     // I dont like this
                 temp.transform.localPosition = new Vector3(x, y, 0.0f);                     // Set position
                 temp.transform.localScale = new Vector3(SQUARE_SCALE, SQUARE_SCALE, 1.0f);  // Set scale
                 GridSquare g = temp.GetComponent<GridSquare>();                             // Get GridSquare              

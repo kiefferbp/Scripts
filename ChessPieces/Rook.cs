@@ -13,7 +13,7 @@ public class Rook : ChessPiece {
          * */
                           //Row Col
         moves = new int[4] { 0,  8,
-                             8,  0} ;
+                             8,  0 };
     }
 
     override public int[] moveDescription() {

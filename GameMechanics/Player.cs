@@ -24,7 +24,6 @@ public class Player : MonoBehaviour {
         newTurn = true;
         pieces = null;
         moves = null;
-        gameObject.SetActive(false);        // Waits for controller to activate it 
     }
 
     void Update()
@@ -38,14 +37,13 @@ public class Player : MonoBehaviour {
                 {
                     pieces = controller.getPieces();    // Get players pieces
                     controller.squaresInPlay(pieces);   // Pieces are in play
-                    newTurn = false;                        
+                    newTurn = false;              
                 }
-
                 /*
                  * Check for a piece to be selected by the player
                  * */
                 foreach (GridSquare g in pieces)
-                { 
+                {
                     if (g.isTriggered())    // Piece has been selected
                     {
                         selectedPiece = g;                      // Piece to be moved 

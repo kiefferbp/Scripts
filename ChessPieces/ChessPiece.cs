@@ -15,8 +15,6 @@ abstract public class ChessPiece : MonoBehaviour {
      * an 8, this indicates a range from 1 to 8. Ex. { 8, 0 } 
      * means that a piece can from between 1 and 8 spaces along 
      * its current row and 0 spaces along its current column.
-     * */
-    private int[] moves;    
-
+     * */  
     abstract public int[] moveDescription();
 }
