@@ -16,10 +16,10 @@ public class GameController : MonoBehaviour {
     /*
      * Constants
      * */
-    private const float VEC_ZERO = 0.0f;
-    private const float SCALE_X = 0.7f;     
-    private const float SCALE_Y = 0.3f;
-    private const float SCALE_Z = 0.7f;
+    private const float VEC_ZERO    = 0.0f;
+    private const float SCALE_X     = 0.7f;     
+    private const float SCALE_Y     = 0.3f;
+    private const float SCALE_Z     = 0.7f;
     /*
      * Public variables
      * */
@@ -69,22 +69,190 @@ public class GameController : MonoBehaviour {
     {
         ChessPiece piece = g.getPiece();
         List<GridSquare> possibleMoves = new List<GridSquare>();
-        int row = g.getRow();
-        int col = g.getCol();
+        int curRow = g.getRow();
+        int curCol = g.getCol();
         int[] moveDescriptions = piece.moveDescription();
-
-        //GridSquare candidate; 
-
-        if (piece is Pawn) {
-            if (whitePlayer) {
-                Debug.Log("Selected a pawn");
-            }
-
-        }
+        int checkRow, checkCol;
+        GridSquare candidate;
 
         
 
+        Player enemy = whiteTurn ? blackPlayer : whitePlayer;
+        int direction = whiteTurn ? 1 : -1;
+
+        if (piece is Pawn) {
+            checkRow = curRow + direction;
+            checkCol = curCol + 1;
+            if(boundaryCheck(checkRow, checkCol)) {
+                candidate = grid[checkRow, checkCol];
+                if (candidate.getPlayer() == enemy)
+                    possibleMoves.Add(candidate);
+            } // Checks one diagonal
+            checkCol = curCol - 1;
+            if(boundaryCheck(checkRow, checkCol)) {
+                candidate = grid[checkRow, checkCol];
+                if (candidate.getPlayer() == enemy)
+                    possibleMoves.Add(candidate);
+            } // Checks other diagonal
+
+
+
+        }
+
+
+
+        checkRow = curRow;
+        checkCol = curCol;
+        for(int i = 0; i < moveDescriptions.Length; i += 2) {
+            int rowMove = moveDescriptions[i];
+            int colMove = moveDescriptions[i + 1]; 
+
+            if(rowMove == 8 ) {
+               
+            }
+
+
+
+        }
+
         return possibleMoves;
+    }
+
+    public void goDownRow(int row, int col, List<GridSquare> moves, Player enermy) {
+        GridSquare candidate;
+        Player p;
+        for (int i = col + 1; i < 8; i++) {
+            candidate = grid[row, i];
+            p = candidate.getPlayer();
+            if (p == null)
+                moves.Add(candidate);
+            else if (p == enermy) {
+                moves.Add(candidate);
+                break;
+            }
+            else
+                break;
+        }
+        for (int i = col - 1; i >= 0; i--) {
+            candidate = grid[row, i];
+            p = candidate.getPlayer();
+            if (p == null)
+                moves.Add(candidate);
+            else if (p == enermy) {
+                moves.Add(candidate);
+                break;
+            }
+            else
+                break;
+        }
+    }
+
+    public void goDownCol(int row, int col, List<GridSquare> moves, Player enermy) {
+        GridSquare candidate;
+        Player p;
+        for (int i = row + 1; i < 8; i++) {
+            candidate = grid[col, i];
+            p = candidate.getPlayer();
+            if (p == null)
+                moves.Add(candidate);
+            else if (p == enermy) {
+                moves.Add(candidate);
+                break;
+            }
+            else
+                break;
+        }
+        for (int i = row - 1; i >= 0; i--) {
+            candidate = grid[col, i];
+            p = candidate.getPlayer();
+            if (p == null)
+                moves.Add(candidate);
+            else if (p == enermy) {
+                moves.Add(candidate);
+                break;
+            }
+            else
+                break;
+        }
+    }
+
+    public void goDownDiag(int row, int col, List<GridSquare> moves, Player enermy) {
+        GridSquare candidate;
+        Player p;
+
+        int up = 1;
+        int down = -1;
+        int left = -1;
+        int right = 1;
+
+        bool done = false;
+        bool doneUpperLeft = false;
+        bool doneUpperRight = false;
+        bool doneLowerLeft = false;
+        bool doneLowerRight = false;
+
+        while (!done) {
+            int curRow = row + up;
+            int curCol = col + left;
+            if (boundaryCheck(curRow, curCol))      // Boundary check
+                doneUpperLeft = true;
+            if (!doneUpperLeft) {                   // Upper left diag
+                candidate = grid[curRow, curCol];
+                p = candidate.getPlayer();
+                if (p == null)
+                    moves.Add(candidate);
+                else if(p == enermy) {
+                    moves.Add(candidate);
+                    doneUpperLeft = true;
+                }
+                else
+                    doneUpperLeft = true;
+                left--;
+            }
+            curRow = row + up;
+            curCol = col + right;
+            if (boundaryCheck(curRow, curCol))      // Boundary check
+                doneUpperRight = true;
+            if (!doneUpperRight) {                  // Upper right diag
+                candidate = grid[curRow, curCol];   
+                p = candidate.getPlayer();
+                if (p == null)
+                    moves.Add(candidate);
+                else if (p == enermy) {
+                    moves.Add(candidate);
+                    doneUpperLeft = true;
+                }
+                else
+                    doneUpperLeft = true;
+                right++;
+            }
+            if (!doneUpperLeft) {
+                candidate = grid[row + up, col + left];
+                p = candidate.getPlayer();
+                if (p == null)
+                    moves.Add(candidate);
+                else if (p == enermy) {
+                    moves.Add(candidate);
+                    doneUpperLeft = true;
+                }
+                else
+                    doneUpperLeft = true;
+            }
+            if (!doneUpperLeft) {
+                candidate = grid[row + up, col + left];
+                p = candidate.getPlayer();
+                if (p == null)
+                    moves.Add(candidate);
+                else if (p == enermy) {
+                    moves.Add(candidate);
+                    doneUpperLeft = true;
+                }
+                else
+                    doneUpperLeft = true;
+            }
+            if (doneUpperLeft && doneUpperRight && doneLowerLeft && doneLowerRight)
+                done = true;
+        }
     }
 
     public void makeMove(GridSquare from, GridSquare to)
@@ -116,7 +284,7 @@ public class GameController : MonoBehaviour {
     }
 
     public bool boundaryCheck(int row, int col) {
-        return row >= 0 && row <= 8 && col >= 0 && col <= 8;
+        return row >= 0 && row < 8 && col >= 0 && col < 8;
     }
 
     public List<GridSquare> getPieces()
